@@ -3,7 +3,7 @@ const express = require("express");
 const models = require("../models");
 const config = require("../../config");
 const GitHub = require("../services/github");
-
+const controllers = require("../controllers");
 const router = express.Router();
 
 router.get("/logout", function(req, res) {
