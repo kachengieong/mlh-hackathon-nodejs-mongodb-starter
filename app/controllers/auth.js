@@ -1,10 +1,10 @@
 const express = require("express");
+
 const models = require("../models");
 const config = require("../../config");
 const GitHub = require("../services/github");
-const controllers = require("../controllers");
-const router = express.Router();
 
+const router = express.Router();
 
 router.get("/logout", function(req, res) {
   req.session.destroy();
@@ -25,13 +25,11 @@ router.get("/callback/github", async function(req, res) {
   const github = new GitHub({ client_id: config.githubClientId, client_secret: config.githubClientSecret });
   const access_token = await github.get_token(req.query.code);
 
-  console.log("Access token: " + access_token);
-
   if (!access_token) {
     return res.render("404");
   }
 
- const user = await models.userSchema.statics.findOneOrCreate(access_token);
+  const user = userSchema.statics.findUser(access_token);
 
   req.session.access_token = access_token;
   req.session.user = user;
