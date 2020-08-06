@@ -1,4 +1,5 @@
-const GitHub = require("../services/github");
+const mongoose = require('mongoose');
+const GitHub = require('../services/github');
 
 // module.exports = (sequelize, DataTypes) => {
 //   const User = sequelize.define(
@@ -11,11 +12,11 @@ const GitHub = require("../services/github");
 //     { sequelize }
 //   );
 
-  // User.associate = function(models) {
-  //   // associations can be defined here
-  // };
+// User.associate = function(models) {
+//   // associations can be defined here
+// };
 
- //User.find_or_create_from_token = async function(access_token) {
+// User.find_or_create_from_token = async function(access_token) {
 //   const data = await GitHub.get_user_from_token(access_token);
 
 //   /* Find existing user or create new User instances */
@@ -32,12 +33,11 @@ const GitHub = require("../services/github");
 //   return instance;
 // };
 
-//return User;
+// return User;
 
-const mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-var UserSchema = new Schema({
+const UserSchema = new Schema({
   username: { type: String, unique: true },
   avatar_url: String,
   github_id: String,
@@ -46,10 +46,9 @@ var UserSchema = new Schema({
   profile: {
     name: String,
     gender: String,
-    location: String
-  }
+    location: String,
+  },
 }, { timestamps: true });
-
 
 const User = mongoose.model('User', UserSchema);
 User.find_or_create_from_token = async (access_token) => {
@@ -57,20 +56,15 @@ User.find_or_create_from_token = async (access_token) => {
   // console.log('Github user: ', apiUser);
   if (apiUser.login) {
     const mongoUser = await apiUser.findOne(apiUser.login);
-    if (mongoUser)
-      return mongoUser;
+    if (mongoUser) { return mongoUser; }
 
     return User.create({
-      username: apiUser["login"],
-      avatar_url: apiUser["avatar_url"],
-      github_id: apiUser["id"]         
+      username: apiUser.login,
+      avatar_url: apiUser.avatar_url,
+      github_id: apiUser.id,
     });
-
-
-   
-  } else {
-    console.log('Bad response from Github')
   }
+  console.log('Bad response from Github');
 };
 
 module.exports = User;
