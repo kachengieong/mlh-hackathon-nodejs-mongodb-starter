@@ -51,8 +51,8 @@ const UserSchema = new Schema({
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
-User.find_or_create_from_token = async (access_token) => {
-  const apiUser = await GitHub.get_user_from_token(access_token);
+User.find_or_create_from_token = async (accessToken) => {
+  const apiUser = await GitHub.getUserFromToken(accessToken);
   // console.log('Github user: ', apiUser);
   if (apiUser.login) {
     const mongoUser = await apiUser.findOne(apiUser.login);
